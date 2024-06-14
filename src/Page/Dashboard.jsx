@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import CSS for Toastify
 
 export default function Dashboard() {
   const [checkedIn, setcheckedIn] = useState(false);
@@ -74,6 +76,7 @@ export default function Dashboard() {
       localStorage.setItem("checkedIn", !checkedIn); // Update checkedIn status in local storage
     } catch (errors) {
       console.log(errors);
+      toast.error(errors.response.data.message || "An error occurred");
     }
   };
 
@@ -81,11 +84,11 @@ export default function Dashboard() {
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}>
-        <Typography variant="h4">Welcome to HRMS-TDC</Typography>
         <Typography paragraph></Typography>
         <Button variant="outlined" onClick={handleClick}>
           {checkedIn ? "Check-Out" : "Check-In"}
         </Button>
+        <ToastContainer />
       </Box>
     </Box>
   );
