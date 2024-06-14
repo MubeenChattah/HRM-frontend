@@ -10,7 +10,6 @@ import { TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { LogInSchema } from "../schemas";
-import { Password } from "@mui/icons-material";
 import axios from "axios";
 
 const initialValues = {
@@ -30,7 +29,7 @@ function LogIn(props) {
       onSubmit: async (values, action) => {
         try {
           const response = await axios.post(
-            "https://649b-116-58-74-18.ngrok-free.app/auth/login",
+            "http://localhost:3001/auth/login",
             {
               email_mobile: values.email_mobile,
               password: values.password,

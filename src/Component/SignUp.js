@@ -8,7 +8,6 @@ import PropTypes from "prop-types";
 import { TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { SignUpSchema } from "../schemas";
-import { useActionData } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +28,7 @@ function SignUp(props) {
       onSubmit: async (values, action) => {
         try {
           const response = await axios.post(
-            "https://649b-116-58-74-18.ngrok-free.app/auth/signup",
+            "http://localhost:3001/auth/signup",
             {
               name: values.name,
               username: values.username,
