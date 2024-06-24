@@ -21,6 +21,8 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import CategoryIcon from "@mui/icons-material/Category";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
+import Button from "@mui/material/Button";
 
 import { useNavigate } from "react-router-dom";
 const drawerWidth = 240;
@@ -104,6 +106,12 @@ export default function SideBar() {
     setOpen(false);
   };
 
+  const handleLogout = () => {
+    // Clear the token from localStorage and navigate to login page
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -122,8 +130,16 @@ export default function SideBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            HRMS-TDC
+            Admin Dashboard
           </Typography>
+          <Button
+            color="inherit"
+            startIcon={<LogoutIcon />}
+            onClick={handleLogout}
+            sx={{ ml: "auto" }}
+          >
+            Logout
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -142,7 +158,7 @@ export default function SideBar() {
             disablePadding
             sx={{ display: "block" }}
             onClick={() => {
-              navigate("/Dashboard");
+              navigate("/AdminDashboard");
             }}
           >
             <ListItemButton
@@ -172,7 +188,7 @@ export default function SideBar() {
             disablePadding
             sx={{ display: "block" }}
             onClick={() => {
-              navigate("/product");
+              navigate("/Employee");
             }}
           >
             <ListItemButton
@@ -192,7 +208,10 @@ export default function SideBar() {
                 <CategoryIcon />
               </ListItemIcon>
 
-              <ListItemText primary="Product" sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText
+                primary="Employee Data"
+                sx={{ opacity: open ? 1 : 0 }}
+              />
             </ListItemButton>
           </ListItem>
           <ListItem

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SideBar from "../Component/SideBar";
+import AdminSideBar from "./AdminSideBar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
@@ -151,7 +151,7 @@ export default function Dashboard() {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <SideBar />
+      <AdminSideBar />
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}>
         <Typography paragraph></Typography>
         <Button variant="outlined" onClick={handleClick}>
