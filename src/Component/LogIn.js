@@ -50,11 +50,12 @@ function LogIn(props) {
           localStorage.setItem("token", response.data.token.access_token);
           const token = localStorage.getItem("token");
           console.log(token);
-          if (token) {
+          if (token && userType === "Admin") {
             action.resetForm();
-            navigate("/Dashboard");
+            navigate("/AdminDashboard");
           } else {
-            console.log(errors);
+            action.resetForm();
+            navigate("Dashboard");
           }
         } catch (errors) {
           console.log(errors);
