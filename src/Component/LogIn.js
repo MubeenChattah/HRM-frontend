@@ -23,11 +23,7 @@ function LogIn(props) {
   let decodedToken = null;
   let userType = null;
 
-  if (token) {
-    decodedToken = jwtDecode(token);
-    userType = decodedToken.userType;
-    console.log("decodedToken:", decodedToken);
-  }
+ 
 
   const navigate = useNavigate();
   const handleSignUp = () => {
@@ -49,7 +45,12 @@ function LogIn(props) {
           console.log(response.data);
           localStorage.setItem("token", response.data.token.access_token);
           const token = localStorage.getItem("token");
-          console.log(token);
+          if (token) {
+            console.log("in if loop")
+            decodedToken = jwtDecode(token);
+            userType = decodedToken.role;
+            console.log("decodedToken:", userType);
+          }
           if (token && userType === "Admin") {
             action.resetForm();
             navigate("/AdminDashboard");
