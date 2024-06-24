@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { LogInSchema } from "../schemas";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const initialValues = {
   email_mobile: "",
@@ -18,6 +19,16 @@ const initialValues = {
 };
 
 function LogIn(props) {
+  const token = localStorage.getItem("token");
+  let decodedToken = null;
+  let userType = null;
+
+  if (token) {
+    decodedToken = jwtDecode(token);
+    userType = decodedToken.userType;
+    console.log("decodedToken:", decodedToken);
+  }
+
   const navigate = useNavigate();
   const handleSignUp = () => {
     navigate("/SignUp");

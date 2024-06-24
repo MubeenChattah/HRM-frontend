@@ -5,7 +5,13 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
-import { TextField } from "@mui/material";
+import {
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import { useFormik } from "formik";
 import { SignUpSchema } from "../schemas";
 import axios from "axios";
@@ -17,10 +23,26 @@ const initialValues = {
   username: "",
   email_mobile: "",
   password: "",
+  departmentId: "",
 };
 
 function SignUp(props) {
+  const [departments, setDepartments] = React.useState([]);
   const navigate = useNavigate();
+
+  const fetchDepartments = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/departments");
+      setDepartments(response.data);
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchDepartments();
+  }, []);
+
   const { values, errors, handleBlur, handleChange, touched, handleSubmit } =
     useFormik({
       initialValues: initialValues,
@@ -34,6 +56,7 @@ function SignUp(props) {
               username: values.username,
               email_mobile: values.email_mobile,
               password: values.password,
+              departmentId: values.departmentId,
             }
           );
           console.log(response.data);
@@ -42,7 +65,7 @@ function SignUp(props) {
           console.log(token);
           if (token) {
             action.resetForm();
-            navigate("/Dashboard");
+            navigate("/");
           } else {
             console.log(errors);
           }
@@ -51,6 +74,7 @@ function SignUp(props) {
         }
       },
     });
+
   return (
     <Box
       component="main"
@@ -60,7 +84,6 @@ function SignUp(props) {
         justifyContent: "center",
         alignItems: "center",
       }}
-      onSubmit={handleSubmit}
     >
       <Card sx={{ padding: "25px" }}>
         <React.Fragment>
@@ -146,7 +169,7 @@ function SignUp(props) {
                 <p className="errors">{errors.email_mobile}</p>
               ) : null}
               <Typography
-                cmponent="label"
+                component="label"
                 sx={{
                   mb: "10px",
                   fontSize: "14px",
@@ -169,6 +192,38 @@ function SignUp(props) {
               />
               {errors.password && touched.password ? (
                 <p className="errors">{errors.password}</p>
+              ) : null}
+              <Typography
+                component="label"
+                sx={{
+                  mb: "10px",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  display: "block",
+                }}
+              >
+                Department
+              </Typography>
+              <FormControl fullWidth sx={{ mb: "10px", width: "300px" }}>
+                <InputLabel id="department-label">Department</InputLabel>
+                <Select
+                  labelId="department-label"
+                  id="department"
+                  name="departmentId"
+                  value={values.departmentId}
+                  label="Department"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                >
+                  {departments.map((department) => (
+                    <MenuItem key={department.id} value={department.id}>
+                      {department.departmentName} - {department.teamLeader}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {errors.departmentId && touched.departmentId ? (
+                <p className="errors">{errors.departmentId}</p>
               ) : null}
             </CardContent>
             <Box sx={{ display: "flex" }}>
