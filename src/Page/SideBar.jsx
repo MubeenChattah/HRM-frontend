@@ -32,6 +32,7 @@ export default function SideBar() {
   const handleLogout = () => {
     // Clear the token from localStorage and navigate to login page
     localStorage.removeItem("token");
+    localStorage.removeItem("userType");
     navigate("/");
   };
 

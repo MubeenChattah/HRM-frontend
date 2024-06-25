@@ -22,6 +22,7 @@ export default function AllData() {
   const [workLogs, setWorkLogs] = useState([]);
 
   const token = localStorage.getItem("token");
+  const userType = localStorage.getItem("userType");
   let decodedToken = null;
   let userId = null;
 
@@ -34,10 +35,10 @@ export default function AllData() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!token) {
-      navigate("/");
-    } else {
+    if (token && userType === "Admin") {
       fetchWorkLogs();
+    } else {
+      navigate("/");
     }
   }, [token, navigate]);
 

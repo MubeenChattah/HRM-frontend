@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
+
 export default function Employee() {
   const [departments, setDepartments] = useState([]);
   const [users, setUsers] = useState([]);
@@ -23,6 +25,7 @@ export default function Employee() {
   const [workLogs, setWorkLogs] = useState([]);
 
   const token = localStorage.getItem("token");
+  const userType = localStorage.getItem("userType");
   let decodedToken = null;
   let userId = null;
 
@@ -33,10 +36,10 @@ export default function Employee() {
   }
   const navigate = useNavigate();
   useEffect(() => {
-    if (!token) {
-      navigate("/");
-    } else {
+    if (token && userType === "Admin") {
       fetchDepartments();
+    } else {
+      navigate("/");
     }
   }, [token, navigate]);
   const fetchDepartments = async () => {
@@ -98,6 +101,28 @@ export default function Employee() {
     console.log("User ID:", userId);
     setSelectedUser(selectedUser);
     fetchWorkLogsByUser(userId);
+  };
+
+  const handleDownloadClick = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/work-log/export/all?user=${selectedUser.name}`,
+        {
+          responseType: "blob",
+        }
+      );
+
+      const blob = new Blob([response.data]);
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      link.href = url;
+      link.setAttribute("download", `${selectedUser.name}_worklogs.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.removeChild();
+    } catch (error) {
+      console.error("Error downloading CSV:", error);
+    }
   };
 
   const formatTableTime = (dateTimeString) => {
@@ -217,6 +242,14 @@ export default function Employee() {
               </TableBody>
             </Table>
           </TableContainer>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleDownloadClick}
+            sx={{ mt: 2, display: "block" }}
+          >
+            Download Worklogs
+          </Button>
         </Box>
       </Box>
     </Box>

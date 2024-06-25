@@ -29,6 +29,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
+  const userType = localStorage.getItem("userType");
   let decodedToken = null;
   let userId = null;
 
@@ -39,9 +40,7 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    if (!token) {
-      navigate("/");
-    } else {
+    if (token && userType === "Employee") {
       const storedCheckedIn = localStorage.getItem("checkedIn") === "true";
       const storedWorkLogId = localStorage.getItem("workLogId");
       setCheckedIn(storedCheckedIn);
@@ -58,6 +57,8 @@ export default function Dashboard() {
           startTimer();
         }
       }
+    } else {
+      navigate("/");
     }
   }, [token, navigate]);
 

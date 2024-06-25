@@ -23,8 +23,6 @@ function LogIn(props) {
   let decodedToken = null;
   let userType = null;
 
- 
-
   const navigate = useNavigate();
   const handleSignUp = () => {
     navigate("/SignUp");
@@ -44,9 +42,10 @@ function LogIn(props) {
           );
           console.log(response.data);
           localStorage.setItem("token", response.data.token.access_token);
+          localStorage.setItem("userType", response.data.data.userType);
           const token = localStorage.getItem("token");
           if (token) {
-            console.log("in if loop")
+            console.log("in if loop");
             decodedToken = jwtDecode(token);
             userType = decodedToken.role;
             console.log("decodedToken:", userType);
