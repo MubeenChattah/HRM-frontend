@@ -218,7 +218,7 @@ export default function SideBar() {
             disablePadding
             sx={{ display: "block" }}
             onClick={() => {
-              navigate("/addproduct");
+              navigate("/AllData");
             }}
           >
             <ListItemButton
@@ -238,10 +238,7 @@ export default function SideBar() {
                 <AddCircleIcon />
               </ListItemIcon>
 
-              <ListItemText
-                primary="Add Product"
-                sx={{ opacity: open ? 1 : 0 }}
-              />
+              <ListItemText primary="All Data" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
           <ListItem

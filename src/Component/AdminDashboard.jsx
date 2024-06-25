@@ -3,6 +3,7 @@ import AdminSideBar from "./AdminSideBar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
+
 import {
   Button,
   Table,
@@ -149,6 +150,35 @@ export default function Dashboard() {
       .padStart(2, "0")}`;
   };
 
+  const formatTableTime = (dateTimeString) => {
+    const timeOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+      timeZone: "UTC",
+    };
+
+    const date = new Date(dateTimeString);
+    const formattedTime = date.toLocaleTimeString("en-US", timeOptions);
+
+    return formattedTime;
+  };
+
+  const formatDate = (dateTimeString) => {
+    const dateOptions = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      timeZone: "UTC",
+    };
+
+    const date = new Date(dateTimeString);
+    const formattedDate = date.toLocaleDateString("en-US", dateOptions);
+
+    return formattedDate;
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <AdminSideBar />
@@ -188,18 +218,14 @@ export default function Dashboard() {
               {workLogs.map((log) => (
                 <TableRow key={log.id}>
                   <TableCell>{log.user.name}</TableCell>
-                  <TableCell>
-                    {new Date(log.checkinTime).toLocaleString()}
-                  </TableCell>
+                  <TableCell>{formatTableTime(log.checkinTime)}</TableCell>
                   <TableCell>
                     {log.checkoutTime
-                      ? new Date(log.checkoutTime).toLocaleString()
+                      ? formatTableTime(log.checkoutTime)
                       : "N/A"}
                   </TableCell>
                   <TableCell>{log.workingTime} mins</TableCell>
-                  <TableCell>
-                    {new Date(log.checkinTime).toLocaleDateString()}
-                  </TableCell>
+                  <TableCell>{formatDate(log.checkinTime)}</TableCell>
                   <TableCell>{log.user.department.departmentName}</TableCell>
                   <TableCell>{log.user.department.teamLeader}</TableCell>
                 </TableRow>

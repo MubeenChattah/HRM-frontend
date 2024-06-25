@@ -1,7 +1,6 @@
 import React from "react";
 import AdminSideBar from "../Component/AdminSideBar";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -15,7 +14,7 @@ import {
   Paper,
 } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export default function Employee() {
   const [departments, setDepartments] = useState([]);
   const [users, setUsers] = useState([]);
@@ -100,6 +99,35 @@ export default function Employee() {
     setSelectedUser(selectedUser);
     fetchWorkLogsByUser(userId);
   };
+
+  const formatTableTime = (dateTimeString) => {
+    const timeOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+      timeZone: "UTC",
+    };
+
+    const date = new Date(dateTimeString);
+    const formattedTime = date.toLocaleTimeString("en-US", timeOptions);
+
+    return formattedTime;
+  };
+
+  const formatDate = (dateTimeString) => {
+    const dateOptions = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      timeZone: "UTC",
+    };
+
+    const date = new Date(dateTimeString);
+    const formattedDate = date.toLocaleDateString("en-US", dateOptions);
+
+    return formattedDate;
+  };
   return (
     <Box sx={{ display: "flex" }}>
       <AdminSideBar />
@@ -174,18 +202,14 @@ export default function Employee() {
                 {workLogs.map((log) => (
                   <TableRow key={log.id}>
                     <TableCell>{log.user.name}</TableCell>
-                    <TableCell>
-                      {new Date(log.checkinTime).toLocaleString()}
-                    </TableCell>
+                    <TableCell>{formatTableTime(log.checkinTime)}</TableCell>
                     <TableCell>
                       {log.checkoutTime
-                        ? new Date(log.checkoutTime).toLocaleString()
+                        ? formatTableTime(log.checkoutTime)
                         : "N/A"}
                     </TableCell>
                     <TableCell>{log.workingTime} mins</TableCell>
-                    <TableCell>
-                      {new Date(log.checkinTime).toLocaleDateString()}
-                    </TableCell>
+                    <TableCell>{formatDate(log.checkinTime)}</TableCell>
                     <TableCell>{log.user.department.departmentName}</TableCell>
                     <TableCell>{log.user.department.teamLeader}</TableCell>
                   </TableRow>

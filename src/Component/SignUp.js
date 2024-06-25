@@ -17,6 +17,7 @@ import { SignUpSchema } from "../schemas";
 import axios from "axios";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const initialValues = {
   name: "",
@@ -30,6 +31,10 @@ function SignUp(props) {
   const [departments, setDepartments] = React.useState([]);
   const navigate = useNavigate();
 
+  const handleLogIn = () => {
+    navigate("/");
+  };
+
   const fetchDepartments = async () => {
     try {
       const response = await axios.get("http://localhost:3001/departments");
@@ -39,7 +44,7 @@ function SignUp(props) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchDepartments();
   }, []);
 
@@ -229,6 +234,9 @@ function SignUp(props) {
             <Box sx={{ display: "flex" }}>
               <Button type="submit" fullWidth>
                 Sign Up
+              </Button>
+              <Button type="submit" onClick={handleLogIn} fullWidth>
+                Log In
               </Button>
             </Box>
           </form>
