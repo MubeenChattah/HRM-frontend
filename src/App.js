@@ -7,6 +7,8 @@ import Settings from "./Page/Settings";
 import SignUp from "./Component/SignUp";
 import LogIn from "./Component/LogIn";
 import AdminDashboard from "./Component/AdminDashboard";
+import DepartmentFrom from "./Component/DepartmentForm";
+import DepartmentEdit from "./Component/DepartmentEdit";
 
 export default function App() {
   return (
@@ -19,7 +21,12 @@ export default function App() {
           <Route path="/AdminDashboard" element={<AdminDashboard />}></Route>
           <Route path="/Employee" element={<Employee />}></Route>
           <Route path="/AllData" element={<AllData />}></Route>
-          <Route path="/settings" element={<Settings />}></Route>
+          <Route path="/Departments" element={<Settings />}></Route>
+          <Route path="/DepartmentForm" element={<DepartmentFrom />}></Route>
+          <Route
+            path="/edit-department/:id"
+            element={<DepartmentEdit />}
+          ></Route>
         </Routes>
       </BrowserRouter>
     </>

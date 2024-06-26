@@ -246,7 +246,7 @@ export default function SideBar() {
             disablePadding
             sx={{ display: "block" }}
             onClick={() => {
-              navigate("/settings");
+              navigate("/Departments");
             }}
           >
             <ListItemButton

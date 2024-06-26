@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AdminSideBar from "./AdminSideBar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -25,7 +25,7 @@ export default function Dashboard() {
   const [workLogId, setWorkLogId] = useState(null);
   const [workLogs, setWorkLogs] = useState([]);
   const [timer, setTimer] = useState(0);
-  const [timerInterval, setTimerInterval] = useState(null);
+  const timerInterval = useRef(null);
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -60,6 +60,13 @@ export default function Dashboard() {
     } else {
       navigate("/");
     }
+
+    // Clear interval on component unmount
+    return () => {
+      if (timerInterval.current) {
+        clearInterval(timerInterval.current);
+      }
+    };
   }, [token, navigate]);
 
   const fetchWorkLogs = async () => {
@@ -128,15 +135,19 @@ export default function Dashboard() {
   };
 
   const startTimer = () => {
-    const interval = setInterval(() => {
+    if (timerInterval.current) {
+      clearInterval(timerInterval.current);
+    }
+    timerInterval.current = setInterval(() => {
       setTimer((prev) => prev + 1);
     }, 1000);
-    setTimerInterval(interval);
   };
 
   const stopTimer = () => {
-    clearInterval(timerInterval);
-    setTimerInterval(null);
+    if (timerInterval.current) {
+      clearInterval(timerInterval.current);
+    }
+    timerInterval.current = null;
     localStorage.removeItem("checkinTime");
     setTimer(0);
   };
@@ -205,13 +216,27 @@ export default function Dashboard() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Check-in Time</TableCell>
-                <TableCell>Check-out Time</TableCell>
-                <TableCell>Time Worked</TableCell>
-                <TableCell>Date</TableCell>
-                <TableCell>Department</TableCell>
-                <TableCell>Team Leader</TableCell>
+                <TableCell>
+                  <b>Name</b>
+                </TableCell>
+                <TableCell>
+                  <b>Check-in Time</b>
+                </TableCell>
+                <TableCell>
+                  <b>Check-out Time</b>
+                </TableCell>
+                <TableCell>
+                  <b>Time Worked</b>
+                </TableCell>
+                <TableCell>
+                  <b>Date</b>
+                </TableCell>
+                <TableCell>
+                  <b>Department</b>
+                </TableCell>
+                <TableCell>
+                  <b>Team Leader</b>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

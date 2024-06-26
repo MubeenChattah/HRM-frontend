@@ -15,6 +15,7 @@ import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
+import { toast } from "react-toastify";
 
 export default function Settings() {
   const [departments, setDepartments] = useState([]);
@@ -40,6 +41,10 @@ export default function Settings() {
     }
   }, [token, navigate]);
 
+  const handleCreateDepartment = () => {
+    navigate("/DepartmentForm");
+  };
+
   const fetchDepartments = async () => {
     try {
       const response = await axios.get("http://localhost:3001/departments", {
@@ -52,11 +57,49 @@ export default function Settings() {
       console.error("Error fetching departments:", error);
     }
   };
+
+  const handleDelButton = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3001/departments/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (SubmitEvent) {
+        toast.success("Department deleted successfully");
+        // Refresh the departments list after deletion
+        fetchDepartments();
+      } else {
+        console.log("error");
+      }
+    } catch (error) {
+      console.error("Error deleting department:", error);
+      toast.error("Error deleting department");
+    }
+  };
+
+  console.log("departments", departments);
+
+  const handleEditButton = (department) => {
+    navigate(`/edit-department/${department.id}`, {
+      state: {
+        id: department.id,
+        departmentName: department.departmentName,
+        teamLeader: department.teamLeader,
+      },
+    });
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <AdminSideBar />
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}>
-        <Button variant="contained" color="primary" sx={{ mt: 1, mb: 1 }}>
+        <Button
+          onClick={handleCreateDepartment}
+          variant="contained"
+          color="primary"
+          sx={{ mt: 1, mb: 1 }}
+        >
           Create Department
         </Button>
         <TableContainer component={Paper} sx={{ marginTop: 1 }}>
@@ -70,7 +113,7 @@ export default function Settings() {
                   <b>Department Name</b>
                 </TableCell>
                 <TableCell>
-                  <b>Create/Delete Department</b>
+                  <b>Edit/Delete Department</b>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -79,6 +122,25 @@ export default function Settings() {
                 <TableRow key={department.id}>
                   <TableCell>{department.teamLeader}</TableCell>
                   <TableCell>{department.departmentName}</TableCell>
+                  <TableCell>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleEditButton(department)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      color="primary"
+                      sx={{ mx: 2 }}
+                      onClick={() => handleDelButton(department.id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
