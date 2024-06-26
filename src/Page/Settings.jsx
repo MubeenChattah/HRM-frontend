@@ -9,16 +9,22 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
 import { toast } from "react-toastify";
 
 export default function Settings() {
   const [departments, setDepartments] = useState([]);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [departmentToDelete, setDepartmentToDelete] = useState(null);
 
   const token = localStorage.getItem("token");
   const userType = localStorage.getItem("userType");
@@ -58,27 +64,35 @@ export default function Settings() {
     }
   };
 
-  const handleDelButton = async (id) => {
+  const handleDelButton = (id) => {
+    setDepartmentToDelete(id);
+    setConfirmDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3001/departments/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (SubmitEvent) {
-        toast.success("Department deleted successfully");
-        // Refresh the departments list after deletion
-        fetchDepartments();
-      } else {
-        console.log("error");
-      }
+      await axios.delete(
+        `http://localhost:3001/departments/${departmentToDelete}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Department deleted successfully");
+      fetchDepartments(); // Refresh the departments list after deletion
     } catch (error) {
       console.error("Error deleting department:", error);
       toast.error("Error deleting department");
+    } finally {
+      setConfirmDialogOpen(false);
     }
   };
 
-  console.log("departments", departments);
+  const handleCancelDelete = () => {
+    setConfirmDialogOpen(false);
+    setDepartmentToDelete(null);
+  };
 
   const handleEditButton = (department) => {
     navigate(`/edit-department/${department.id}`, {
@@ -147,6 +161,27 @@ export default function Settings() {
           </Table>
         </TableContainer>
       </Box>
+      <Dialog
+        open={confirmDialogOpen}
+        onClose={handleCancelDelete}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContent dividers>
+            Are you sure you want to delete this department?
+          </DialogContent>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
