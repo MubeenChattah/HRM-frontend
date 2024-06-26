@@ -17,9 +17,12 @@ import { toast } from "react-toastify";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { TextField } from "@mui/material";
 
 export default function AllData() {
   const [workLogs, setWorkLogs] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
   const userType = localStorage.getItem("userType");
@@ -36,48 +39,52 @@ export default function AllData() {
 
   useEffect(() => {
     if (token && userType === "Admin") {
-      fetchWorkLogs();
+      fetchWorkLogs(selectedDate);
     } else {
       navigate("/");
     }
-  }, [token, navigate]);
+  }, [token, navigate, selectedDate]);
 
-  const fetchWorkLogs = async () => {
+  const fetchWorkLogs = async (date = "") => {
+    setIsLoading(true);
     try {
-      const response = await axios.get("http://localhost:3001/work-log/all");
+      let url = "http://localhost:3001/work-log/all";
+      if (date) {
+        url = `http://localhost:3001/work-log/by-date?date=${date}`;
+      }
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setWorkLogs(response.data);
     } catch (error) {
       console.error("Error fetching worklogs:", error);
       toast.error("Error fetching worklogs");
+    } finally {
+      setIsLoading(false);
     }
   };
+
   const formatTableTime = (dateTimeString) => {
-    const timeOptions = {
+    const date = new Date(dateTimeString);
+    return date.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
       hour12: true,
       timeZone: "UTC",
-    };
-
-    const date = new Date(dateTimeString);
-    const formattedTime = date.toLocaleTimeString("en-US", timeOptions);
-
-    return formattedTime;
+    });
   };
 
   const formatDate = (dateTimeString) => {
-    const dateOptions = {
+    const date = new Date(dateTimeString);
+    return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
       timeZone: "UTC",
-    };
-
-    const date = new Date(dateTimeString);
-    const formattedDate = date.toLocaleDateString("en-US", dateOptions);
-
-    return formattedDate;
+    });
   };
 
   const handleDownloadClick = async () => {
@@ -102,11 +109,27 @@ export default function AllData() {
       toast.error("Error downloading CSV");
     }
   };
+  const handleDateChange = (event) => {
+    setSelectedDate(event.target.value);
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
       <AdminSideBar />
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}>
+        <Box sx={{ mb: 2 }}>
+          <TextField
+            id="date"
+            label="Select Date"
+            type="date"
+            value={selectedDate}
+            onChange={handleDateChange}
+            sx={{ width: 200 }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </Box>
         <TableContainer component={Paper} sx={{ marginTop: 1 }}>
           <Table>
             <TableHead>
@@ -135,21 +158,35 @@ export default function AllData() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {workLogs.map((log) => (
-                <TableRow key={log.id}>
-                  <TableCell>{log.user.name}</TableCell>
-                  <TableCell>{formatTableTime(log.checkinTime)}</TableCell>
-                  <TableCell>
-                    {log.checkoutTime
-                      ? formatTableTime(log.checkoutTime)
-                      : "N/A"}
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    Loading...
                   </TableCell>
-                  <TableCell>{log.workingTime} mins</TableCell>
-                  <TableCell>{formatDate(log.checkinTime)}</TableCell>
-                  <TableCell>{log.user.department.departmentName}</TableCell>
-                  <TableCell>{log.user.department.teamLeader}</TableCell>
                 </TableRow>
-              ))}
+              ) : workLogs.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    No records found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                workLogs.map((log) => (
+                  <TableRow key={log.id}>
+                    <TableCell>{log.user.name}</TableCell>
+                    <TableCell>{formatTableTime(log.checkinTime)}</TableCell>
+                    <TableCell>
+                      {log.checkoutTime
+                        ? formatTableTime(log.checkoutTime)
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>{log.workingTime} mins</TableCell>
+                    <TableCell>{formatDate(log.checkinTime)}</TableCell>
+                    <TableCell>{log.user.department.departmentName}</TableCell>
+                    <TableCell>{log.user.department.teamLeader}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
