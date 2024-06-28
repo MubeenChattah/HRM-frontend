@@ -211,13 +211,27 @@ export default function Dashboard() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Check-in Time</TableCell>
-                <TableCell>Check-out Time</TableCell>
-                <TableCell>Time Worked</TableCell>
-                <TableCell>Date</TableCell>
-                <TableCell>Department</TableCell>
-                <TableCell>Team Leader</TableCell>
+                <TableCell>
+                  <b>Name</b>
+                </TableCell>
+                <TableCell>
+                  <b>Check-in Time</b>
+                </TableCell>
+                <TableCell>
+                  <b>Check-out Time</b>
+                </TableCell>
+                <TableCell>
+                  <b>Time Worked</b>
+                </TableCell>
+                <TableCell>
+                  <b>Date</b>
+                </TableCell>
+                <TableCell>
+                  <b>Department</b>
+                </TableCell>
+                <TableCell>
+                  <b>Team Leader</b>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
