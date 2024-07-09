@@ -17,6 +17,7 @@ const initialValues = {
   email_mobile: "",
   Password: "",
 };
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 function LogIn(props) {
   const token = localStorage.getItem("token");
@@ -33,13 +34,10 @@ function LogIn(props) {
       validationSchema: LogInSchema,
       onSubmit: async (values, action) => {
         try {
-          const response = await axios.post(
-            "http://localhost:3001/auth/login",
-            {
-              email_mobile: values.email_mobile,
-              password: values.password,
-            }
-          );
+          const response = await axios.post(`${backendUrl}/auth/login`, {
+            email_mobile: values.email_mobile,
+            password: values.password,
+          });
           console.log(response.data);
           localStorage.setItem("token", response.data.token.access_token);
           localStorage.setItem("userType", response.data.data.userType);

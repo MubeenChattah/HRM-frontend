@@ -21,6 +21,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 export default function Settings() {
   const [departments, setDepartments] = useState([]);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
@@ -53,7 +54,7 @@ export default function Settings() {
 
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/departments", {
+      const response = await axios.get(`${backendUrl}/departments`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -71,14 +72,11 @@ export default function Settings() {
 
   const handleConfirmDelete = async () => {
     try {
-      await axios.delete(
-        `http://localhost:3001/departments/${departmentToDelete}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.delete(`${backendUrl}/departments/${departmentToDelete}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       toast.success("Department deleted successfully");
       fetchDepartments(); // Refresh the departments list after deletion
     } catch (error) {

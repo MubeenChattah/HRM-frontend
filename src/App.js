@@ -11,6 +11,7 @@ import DepartmentFrom from "./Component/DepartmentForm";
 import DepartmentEdit from "./Component/DepartmentEdit";
 
 export default function App() {
+  console.log("url:", process.env.REACT_APP_BACKEND_URL);
   return (
     <>
       <BrowserRouter>

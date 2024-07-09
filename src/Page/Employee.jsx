@@ -16,7 +16,7 @@ import {
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
-
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 export default function Employee() {
   const [departments, setDepartments] = useState([]);
   const [users, setUsers] = useState([]);
@@ -44,7 +44,7 @@ export default function Employee() {
   }, [token, navigate]);
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/departments", {
+      const response = await axios.get(`${backendUrl}/departments`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +57,7 @@ export default function Employee() {
   const fetchUsersByDepartment = async (departmentId) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/auth/team",
+        `${backendUrl}/auth/team`,
         { departmentId },
         {
           headers: {
@@ -75,7 +75,7 @@ export default function Employee() {
   const fetchWorkLogsByUser = async (userId) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/work-log/team-member",
+        `${backendUrl}/work-log/team-member`,
         { userId },
         {
           headers: {
@@ -106,7 +106,7 @@ export default function Employee() {
   const handleDownloadClick = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/work-log/export/all?user=${selectedUser.name}`,
+        `${backendUrl}/work-log/export/all?user=${selectedUser.name}`,
         {
           responseType: "blob",
         }

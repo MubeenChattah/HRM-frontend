@@ -20,6 +20,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import CSS for Toastify
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 export default function Dashboard() {
   const [checkedIn, setCheckedIn] = useState(false);
   const [workLogId, setWorkLogId] = useState(null);
@@ -71,14 +72,11 @@ export default function Dashboard() {
 
   const fetchWorkLogs = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/work-log/by-user",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${backendUrl}/work-log/by-user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setWorkLogs(response.data);
     } catch (error) {
       console.error("Error fetching worklogs:", error);
@@ -95,7 +93,7 @@ export default function Dashboard() {
       if (checkedIn) {
         // For checkout, include Authorization header and send PATCH request
         response = await requestMethod(
-          `http://localhost:3001/work-log/${apiEndpoint}`,
+          `${backendUrl}/work-log/${apiEndpoint}`,
           null,
           {
             headers: {
@@ -107,7 +105,7 @@ export default function Dashboard() {
       } else {
         // For checkin, just send GET request
         response = await requestMethod(
-          `http://localhost:3001/work-log/${apiEndpoint}`,
+          `${backendUrl}/work-log/${apiEndpoint}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

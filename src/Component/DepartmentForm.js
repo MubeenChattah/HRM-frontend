@@ -17,6 +17,7 @@ const initialValues = {
   departmentName: "",
   teamLeader: "",
 };
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 export default function DepartmentFrom() {
   const token = localStorage.getItem("token");
@@ -44,7 +45,7 @@ export default function DepartmentFrom() {
     initialValues: initialValues,
     onSubmit: async () => {
       try {
-        const response = await axios.post("http://localhost:3001/departments", {
+        const response = await axios.post(`${backendUrl}/departments`, {
           departmentName: values.departmentName,
           teamLeader: values.teamLeader,
         });

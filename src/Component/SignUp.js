@@ -27,6 +27,7 @@ const initialValues = {
   departmentId: "",
 };
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 function SignUp(props) {
   const [departments, setDepartments] = React.useState([]);
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ function SignUp(props) {
 
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/departments");
+      const response = await axios.get(`${backendUrl}/departments`);
       setDepartments(response.data);
     } catch (error) {
       console.error("Error fetching departments:", error);
@@ -54,16 +55,13 @@ function SignUp(props) {
       validationSchema: SignUpSchema,
       onSubmit: async (values, action) => {
         try {
-          const response = await axios.post(
-            "http://localhost:3001/auth/signup",
-            {
-              name: values.name,
-              username: values.username,
-              email_mobile: values.email_mobile,
-              password: values.password,
-              departmentId: values.departmentId,
-            }
-          );
+          const response = await axios.post(`${backendUrl}/auth/signup`, {
+            name: values.name,
+            username: values.username,
+            email_mobile: values.email_mobile,
+            password: values.password,
+            departmentId: values.departmentId,
+          });
           console.log(response.data);
           localStorage.setItem("token", response.data.accessToken);
           const token = localStorage.getItem("token");

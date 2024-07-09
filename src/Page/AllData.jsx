@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { TextField } from "@mui/material";
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 export default function AllData() {
   const [workLogs, setWorkLogs] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
@@ -48,9 +49,9 @@ export default function AllData() {
   const fetchWorkLogs = async (date = "") => {
     setIsLoading(true);
     try {
-      let url = "http://localhost:3001/work-log/all";
+      let url = `${backendUrl}/work-log/all`;
       if (date) {
-        url = `http://localhost:3001/work-log/by-date?date=${date}`;
+        url = `${backendUrl}/work-log/by-date?date=${date}`;
       }
       const response = await axios.get(url, {
         headers: {
@@ -89,12 +90,9 @@ export default function AllData() {
 
   const handleDownloadClick = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/work-log/export/all",
-        {
-          responseType: "blob", // Ensure the response is a Blob (binary data)
-        }
-      );
+      const response = await axios.get(`${backendUrl}/work-log/export/all`, {
+        responseType: "blob",
+      });
 
       const blob = new Blob([response.data]);
       const link = document.createElement("a");

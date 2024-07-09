@@ -13,6 +13,8 @@ import { useFormik } from "formik";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 export default function DepartmentEdit() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -41,7 +43,7 @@ export default function DepartmentEdit() {
     },
     onSubmit: async (values) => {
       try {
-        await axios.patch(`http://localhost:3001/departments/${id}`, values, {
+        await axios.patch(`${backendUrl}/departments/${id}`, values, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
